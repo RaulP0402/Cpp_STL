@@ -99,6 +99,47 @@ void testVector(const T& fillValue) {
         std::cout<<"PASSED\n";
     }
 
+    std::cout << "Resize Method: \n";
+    {
+        Vector<T>v(10, fillValue);
+
+        std::cout << "\tResizing from 10 -> 5: ";
+        v.resize(5);
+        assert(v.size() == 5);
+        for (size_t i = 0; i < 5; ++i)
+            assert(v[i] == fillValue);
+        std::cout << "PASSED\n";
+
+        std::cout << "\tResizing from 5 -> 10: ";
+        v.resize(10);
+        assert(v.size() == 10);
+        for (size_t i = 0; i < 10; ++i)
+            assert(v[i] == fillValue);
+        std::cout << "PASSED\n";
+
+        std::cout << "\tResizing from 10 -> 5 with val: ";
+        v.resize(5, fillValue);
+        assert(v.size() == 5);
+        for (size_t i = 0; i < 5; ++i)
+            assert(v[i] == fillValue);
+        std::cout << "PASSED\n";
+
+        std::cout << "\tResizing from 5 -> 10 with val: ";
+        v.resize(10, fillValue);
+        assert(v.size() == 10);
+        for (size_t i = 0; i < 10; ++i)
+            assert(v[i] == fillValue);
+        std::cout << "PASSED\n";
+
+        std::cout << "\tResizing from 10 -> 100: ";
+        v.resize(100, fillValue);
+        assert(v.size() == 100);
+        for (size_t i = 0; i < 100; ++i)
+            assert(v[i] == fillValue);
+        std::cout << "PASSED\n";
+
+    }
+
     std::cout << "Push back method: ";
     {
         Vector<T>v;

@@ -16,7 +16,7 @@ private:
     size_t size_;
     size_t capacity_;
     void grow();
-    void grow(size_t);
+    void grow(size_t, const T&);
 
 public:
     // CONSTRUCTORS & DESTRUCToRS
@@ -34,8 +34,7 @@ public:
     size_t size() const;
     size_t capacity() const;
     size_t max_size() const;
-    void resize(size_t);
-    void resize(size_t, T&);
+    void resize(size_t, const T& = T());
 
     void push_back(const T&);
     void push_back(T&&);

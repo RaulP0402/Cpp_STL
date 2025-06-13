@@ -120,6 +120,24 @@ size_t Vector<T>::max_size() const {
     return std::numeric_limits<size_t>::max() / sizeof(T);
 }
 
+// Resize
+template <typename T>
+void Vector<T>::resize(size_t n, const T& fillValue) {
+    if (n > capacity_) {
+        grow(n, fillValue);
+        return;
+    }
+
+    if (n <= size_) {
+        for (size_t i = n; i < size_; ++i)
+            data_[i].~T();
+        size_ = n;
+    } else {
+        for (size_t i = size_; i < n; ++i)
+            new (data_ + i) T(fillValue);
+        size_ = n;
+    }
+}
 
 // Grow 
 template <typename T>
@@ -136,6 +154,28 @@ void Vector<T>::grow() {
     ::operator delete(data_);
     data_ = newData_;
     capacity_ = newCapacity;
+}
+
+// Grow to size n
+template <typename T>
+void Vector<T>::grow(size_t n, const T& fillValue) {
+    size_t newCapacity = n;
+    T* newData_ = static_cast<T*>(::operator new(sizeof(T) * newCapacity));
+    
+    // Move old elements to new data
+    for (size_t i = 0; i < size_; ++i) {
+        new (newData_ + i) T(std::move(data_[i]));
+        data_[i].~T();
+    }
+
+    // Initialize rest of elements 
+    for (size_t i = size_; i < n; ++i)
+        new (newData_ + i) T(fillValue);
+
+    ::operator delete(data_);
+    data_ = newData_;
+    capacity_ = newCapacity;
+    size_ = n;
 }
 
 // Push back
