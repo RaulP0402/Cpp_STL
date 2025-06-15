@@ -16,7 +16,7 @@ private:
     size_t size_;
     size_t capacity_;
     void grow();
-    void grow(size_t, const T&);
+    void grow(size_t, const T& = T());
 
 public:
     // CONSTRUCTORS & DESTRUCToRS
@@ -35,13 +35,23 @@ public:
     size_t capacity() const;
     size_t max_size() const;
     void resize(size_t, const T& = T());
+    bool empty() const;
+    void reserve(size_t);
 
     void push_back(const T&);
     void push_back(T&&);
 
-
+    // ACCESS
     T& operator[](size_t);
-    T& operator[](const size_t) const;
+    const T& operator[](const size_t) const;
+    T& at(size_t);
+    const T& at(size_t) const;
+    T& front();
+    const T& front() const;
+    T& back();
+    const T& back() const;
+    T* data();
+    const T* data() const;
 };
 
 #include "vector.tpp"

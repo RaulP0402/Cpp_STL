@@ -3,6 +3,7 @@
 #include <new>
 
 #include <iostream>
+#include <stdexcept>
 
 // Empty Container Constructor
 template <typename T>
@@ -139,6 +140,19 @@ void Vector<T>::resize(size_t n, const T& fillValue) {
     }
 }
 
+// Empty
+template <typename T>
+bool Vector<T>::empty() const {
+    return size_ == 0;
+}
+
+// Reserve
+template <typename T>
+void Vector<T>::reserve(size_t n) {
+    if (n > capacity_)
+        grow(n);
+}
+
 // Grow 
 template <typename T>
 void Vector<T>::grow() {
@@ -205,6 +219,61 @@ T& Vector<T>::operator[](size_t index) {
 
 // Constant element access
 template <typename T>
-T& Vector<T>::operator[](size_t index) const {
+const T& Vector<T>::operator[](size_t index) const {
     return *(data_ + index);
+}
+
+// At access
+template <typename T>
+T& Vector<T>::at(size_t index) {
+    if (index >= size_)
+        throw std::out_of_range("Vector index out of range");
+    return *(data_ + index);
+}
+
+template <typename T>
+const T& Vector<T>::at(size_t index) const {
+    if (index >= size_)
+        throw std::out_of_range("Vector index out of range");
+    return *(data_ + index);
+}
+
+
+// Front
+template <typename T>
+T& Vector<T>::front() 
+{
+    return *(data_);
+}
+
+template <typename T>
+const T& Vector<T>::front() const 
+{
+    return *(data_);
+}
+
+// Back
+template <typename T>
+T& Vector<T>::back() 
+{
+    return *(data_ + size_ - 1);
+}
+
+template <typename T>
+const T& Vector<T>::back() const 
+{
+    return *(data_ + size_ - 1);
+}
+
+// Data
+template <typename T>
+T* Vector<T>::data() 
+{
+    return data_;
+}
+
+template <typename T>
+const T* Vector<T>::data() const 
+{
+    return data_;
 }

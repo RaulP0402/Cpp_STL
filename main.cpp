@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cassert>
 
+using std::cout;
+
 template <typename T>
 void printElements(Vector<T>&);
 template <typename T>
@@ -34,121 +36,160 @@ int main() {
 
 template <typename T>
 void testVector(const T& fillValue) {
-    std::cout << "\n";
-    std::cout << "Testing Vector Implementation...\n";
+    cout << "\n";
+    cout << "TESTING VECTOR: ";
 
-    std::cout << "Vector Specifics After Initialization of 10 elements: \n";
     {
         Vector<T>v(10, fillValue);
-        std::cout << "\tSize: " << v.size() << "\n";
-        std::cout << "\tCapacity: " << v.capacity() << "\n";
-        std::cout << "\tMax Size: " << v.max_size() << "\n";
+        assert(
+            v.size() == 10 && \
+            v.capacity() == 10
+        );
     }
 
-    std::cout << "Empty constructor: ";
+    // EMPTY CONSTRUCTOR 
     {
         Vector<T> v;
         assert(v.size() == 0);
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "Fill constructor with unset values: ";
+    // FILL CONSTRUCTOR WITH DEFAULT VALUE
     {
         Vector<T> v(10);
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i) {
             assert(v[i] == T());
         }
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "Fill constructor with set values: ";
+    // FILL CONSTRUCTOR WITH FILLVALUE
     {
         Vector<T>v(10, fillValue);
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i) 
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "Range Constructor: ";
+    // RANGE CONSTRUCTOR
     {
         Vector<T>other(10, fillValue);
         Vector<T>v(other);
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "Move Constructor: ";
+    // MOVE CONSTRUCTOR
     {
         Vector<T>v(Vector<T>(10, fillValue));
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "Initializer List: ";
+    // LIST INTIALIZED CONSTRUCTOR
     {
         Vector<T>v = {fillValue, fillValue, fillValue, fillValue, fillValue};
         assert(v.size() == 5);
         for (size_t i = 0; i < 5; ++i)
             assert(v[i] == fillValue);
-        std::cout<<"PASSED\n";
     }
 
-    std::cout << "Resize Method: \n";
+    // RESIZE METHOD
     {
         Vector<T>v(10, fillValue);
 
-        std::cout << "\tResizing from 10 -> 5: ";
+        // 10 -> 5
         v.resize(5);
         assert(v.size() == 5);
         for (size_t i = 0; i < 5; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
 
-        std::cout << "\tResizing from 5 -> 10: ";
+        // 5 -> 10
         v.resize(10);
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
 
-        std::cout << "\tResizing from 10 -> 5 with val: ";
+        // 10 -> 5 WITH FILLVALUE
         v.resize(5, fillValue);
         assert(v.size() == 5);
         for (size_t i = 0; i < 5; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
 
-        std::cout << "\tResizing from 5 -> 10 with val: ";
+        // 5 -> 10 WITH FILLVALUE
         v.resize(10, fillValue);
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
 
-        std::cout << "\tResizing from 10 -> 100: ";
+        // 5 -> 100 WITH FILLVALUE
         v.resize(100, fillValue);
         assert(v.size() == 100);
         for (size_t i = 0; i < 100; ++i)
             assert(v[i] == fillValue);
-        std::cout << "PASSED\n";
 
     }
 
-    std::cout << "Push back method: ";
+    // EMPTY()
+    {
+        Vector<T>v;
+        assert(v.empty() == true);
+        v.push_back(fillValue);
+        assert(v.empty() != true);
+    }
+
+    // RESERVE()
+    {
+        Vector<T>v(10);
+        v.reserve(1000);
+        assert(v.capacity() == 1000);
+    }
+
+    // PUSH_BACK()
     {
         Vector<T>v;
         for (size_t i = 0; i < 10; ++i) {
             v.push_back(fillValue);
             assert(v.size() == i + 1 && v[i] == T());
         }
-        std::cout << "PASSED\n";
     }
 
-    std::cout << "\n";
+    // ARR[i] AND AT()
+    {
+        Vector<T>v(10, fillValue);
+        assert(v[9] == fillValue);
+        v[9] = fillValue;
+        assert(v.at(9) == fillValue);
+        v.at(9) = fillValue;
+
+        const Vector<T>constV(10, fillValue);
+        assert(constV[9] == fillValue);
+        assert(constV.at(9) == fillValue);
+        
+    }
+
+    // FRONT() & BACK()
+    {
+        Vector<int> intVector;
+        for (int i = 0; i < 100; ++i)
+            intVector.push_back(i);
+        assert(intVector.front() == 0);
+        assert(intVector.back() == 99);
+    }
+
+    // DATA()
+    {
+        Vector<T> v(10, fillValue);
+        const Vector<T> constV(10, fillValue);
+        T* data = v.data();
+        const T* constData = constV.data();
+        for (size_t i = 0; i < 10; ++i)
+        {
+            assert(*(data + i) == fillValue && \
+                    *(constData + i) == fillValue);
+        }
+    }
+
+    std::cout << "PASSED\n\n";;
 }
