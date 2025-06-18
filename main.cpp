@@ -73,7 +73,7 @@ void testVector(const T& fillValue) {
     // RANGE CONSTRUCTOR
     {
         Vector<T>other(10, fillValue);
-        Vector<T>v(other);
+        Vector<T>v(other.begin(), other.end());
         assert(v.size() == 10);
         for (size_t i = 0; i < 10; ++i)
             assert(v[i] == fillValue);
@@ -175,6 +175,7 @@ void testVector(const T& fillValue) {
         for (int i = 0; i < 100; ++i)
             intVector.push_back(i);
         assert(intVector.front() == 0);
+        cout << "Back element is : " << intVector.back() << "\n";
         assert(intVector.back() == 99);
     }
 

@@ -1,9 +1,13 @@
 #include "vector.h"
 #include <utility>
 #include <new>
-
 #include <iostream>
 #include <stdexcept>
+
+
+// ======================================
+// CONSTRUCTORS & DECONSTRUCTORS
+// ======================================
 
 // Empty Container Constructor
 template <typename T>
@@ -34,7 +38,7 @@ Vector<T>::Vector(const size_t n, const T& value)
 
 // Range Constructor
 template <typename T>
-template <Iterator InputIt>
+template <std::input_iterator InputIt>
 Vector<T>::Vector(InputIt begin, InputIt end)
     : data_(nullptr)
     , size_(0)
@@ -93,7 +97,6 @@ Vector<T>::Vector(std::initializer_list<T> ilist)
     }
 }
 
-
 // Deconstructor
 template <typename T>
 Vector<T>::~Vector() {
@@ -102,6 +105,38 @@ Vector<T>::~Vector() {
 
     ::operator delete(data_);
 }
+
+// ======================================
+// ITERATOR METHODS
+// ======================================
+
+template <typename T>
+Vector<T>::Iterator Vector<T>::begin() 
+{
+    return Vector<T>::Iterator(data_);
+}
+
+template <typename T>
+const Vector<T>::Iterator Vector<T>::begin() const 
+{
+    return Vector<T>::Iterator(data_);
+}
+
+template <typename T>
+Vector<T>::Iterator Vector<T>::end()
+{
+    return Vector<T>::Iterator(data_ + size_);
+}
+
+template <typename T>
+const Vector<T>::Iterator Vector<T>::end() const 
+{
+    return Vector<T>::Iterator(data_ + size_);
+}
+
+// ======================================
+// CAPACITY METHODS
+// ======================================
 
 // Size
 template <typename T>
@@ -153,63 +188,9 @@ void Vector<T>::reserve(size_t n) {
         grow(n);
 }
 
-// Grow 
-template <typename T>
-void Vector<T>::grow() {
-    size_t newCapacity = capacity_ == 0 ? 1 : capacity_ * 2;
-    T* newData_ = static_cast<T*>(::operator new(sizeof(T) * newCapacity));
-    
-    // Move old elements to new data
-    for (size_t i = 0; i < size_; ++i) {
-        new (newData_ + i) T(std::move(data_[i]));
-        data_[i].~T();
-    }
-
-    ::operator delete(data_);
-    data_ = newData_;
-    capacity_ = newCapacity;
-}
-
-// Grow to size n
-template <typename T>
-void Vector<T>::grow(size_t n, const T& fillValue) {
-    size_t newCapacity = n;
-    T* newData_ = static_cast<T*>(::operator new(sizeof(T) * newCapacity));
-    
-    // Move old elements to new data
-    for (size_t i = 0; i < size_; ++i) {
-        new (newData_ + i) T(std::move(data_[i]));
-        data_[i].~T();
-    }
-
-    // Initialize rest of elements 
-    for (size_t i = size_; i < n; ++i)
-        new (newData_ + i) T(fillValue);
-
-    ::operator delete(data_);
-    data_ = newData_;
-    capacity_ = newCapacity;
-    size_ = n;
-}
-
-// Push back
-template <typename T>
-void Vector<T>::push_back(const T& value) {
-    if (size_ == capacity_)
-        grow();
-    
-    new (data_ + size_) T(value);
-    size_++;
-}
-
-template <typename T>
-void Vector<T>::push_back(T&& value) {
-    if (size_ == capacity_)
-        grow();
-    
-    new (data_ + size_ ) T(std::move(value));
-    size_++;
-}
+// ======================================
+// ACCESS METHODS
+// ======================================
 
 // Elemenent Access / Indexing
 template <typename T>
@@ -276,4 +257,70 @@ template <typename T>
 const T* Vector<T>::data() const 
 {
     return data_;
+}
+
+// ======================================
+// MODIFIER METHODS
+// ======================================
+
+// Push back
+template <typename T>
+void Vector<T>::push_back(const T& value) {
+    if (size_ == capacity_)
+        grow();
+    
+    new (data_ + size_) T(value);
+    size_++;
+}
+
+template <typename T>
+void Vector<T>::push_back(T&& value) {
+    if (size_ == capacity_)
+        grow();
+    
+    new (data_ + size_ ) T(std::move(value));
+    size_++;
+}
+
+// ======================================
+// HELPER METHODS
+// ======================================
+
+// Grow 
+template <typename T>
+void Vector<T>::grow() {
+    size_t newCapacity = capacity_ == 0 ? 1 : capacity_ * 2;
+    T* newData_ = static_cast<T*>(::operator new(sizeof(T) * newCapacity));
+    
+    // Move old elements to new data
+    for (size_t i = 0; i < size_; ++i) {
+        new (newData_ + i) T(std::move(data_[i]));
+        data_[i].~T();
+    }
+
+    ::operator delete(data_);
+    data_ = newData_;
+    capacity_ = newCapacity;
+}
+
+// Grow to size n
+template <typename T>
+void Vector<T>::grow(size_t n, const T& fillValue) {
+    size_t newCapacity = n;
+    T* newData_ = static_cast<T*>(::operator new(sizeof(T) * newCapacity));
+    
+    // Move old elements to new data
+    for (size_t i = 0; i < size_; ++i) {
+        new (newData_ + i) T(std::move(data_[i]));
+        data_[i].~T();
+    }
+
+    // Initialize rest of elements 
+    for (size_t i = size_; i < n; ++i)
+        new (newData_ + i) T(fillValue);
+
+    ::operator delete(data_);
+    data_ = newData_;
+    capacity_ = newCapacity;
+    size_ = n;
 }
